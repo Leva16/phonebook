@@ -1,0 +1,182 @@
+
+
+//        long start = System.currentTimeMillis();
+//
+//        char[] buff = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+//        TreeMap<Character, Integer> charCount = new TreeMap<>();
+//
+//        Set<Character> alphabetSet = new HashSet<>();
+//
+//        for (char c : buff) {
+//            alphabetSet.add(c);
+//        }
+//
+//        BufferedReader reader = new BufferedReader(new FileReader("/home/leva/Public/hp1.txt"));
+//        int ch;
+//
+//        while ((ch = reader.read()) != -1) {
+//            char myChar = Character.toLowerCase((char) ch);
+//            if (alphabetSet.contains(myChar)) {
+//                if (charCount.containsKey(myChar)) {
+//                    charCount.put(myChar, charCount.get(myChar) + 1);
+//                } else {
+//                    charCount.put(myChar, 1);
+//                }
+//            }
+//        }
+//        reader.close();
+//        System.out.println(charCount);
+//
+//        // Workaround to sort
+//        List<Map.Entry<Character, Integer>> list = new ArrayList<>();
+////
+//        for (Map.Entry<Character, Integer> keyValue: charCount.entrySet()) {
+//            list.add(keyValue);
+//        }
+////
+//        Collections.sort(list, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+////
+//        System.out.println(list);
+////        Collections.sort(list, new Comparator<Map.Entry<Character, Integer>>() {
+////            @Override
+////            public int compare(Map.Entry<Character, Integer> o1, Map.Entry<Character, Integer> o2) {
+////                return o1.getValue().compareTo(o2.getValue());
+////            }
+////        });
+//
+//        long stop = System.currentTimeMillis();
+//        System.out.println(stop - start);
+//
+//        System.out.println("\n");
+//
+//        System.out.println("Find a words.");
+//
+//        long start1 = System.currentTimeMillis();
+//
+//
+//        TreeMap<String, Integer> wordCount = new TreeMap<>();
+//
+//        BufferedReader readerWords = new BufferedReader(new FileReader("/home/leva/Public/db.txt"));
+//
+//        int count = 0, countBuffer = 0, countLine = 0;
+//        String line = "", lineNumber = "", inputSearch = "has";
+//
+//        //BufferedReader br;
+//        while ((line = readerWords.readLine()) != null) {
+//            countLine++;
+//            //line = line.replaceAll("[.,!?:;\")(\"^-_0-9\"]+", "");
+//            line = line.replaceAll("[^A-Za-z]", "");
+//            String[] words = line.split(" ");
+//            for (String word : words) {
+//                word = word.toLowerCase();
+//                if (word.equalsIgnoreCase(inputSearch)) {
+//                    count++;
+//                    countBuffer++;
+//                }
+//                if (wordCount.containsKey(word)) {
+//                    wordCount.put(word, wordCount.get(word) + 1);
+//                } else {
+//                    wordCount.put(word, 1);
+//                }
+//            }
+//            if (countBuffer > 0) {
+//                countBuffer = 0;
+//                lineNumber += countLine + ", ";
+//            }
+//        }
+//        readerWords.close();
+//        System.out.println("Has found " + count + " times.");
+//        //System.out.println("Words found " + lineNumber + " times.");
+//        System.out.println(wordCount);
+//
+//        List<Map.Entry<String, Integer>> list1 = new ArrayList<>();
+////
+//        for (Map.Entry<String, Integer> keyValue: wordCount.entrySet()) {
+//            list1.add(keyValue);
+//        }
+//
+//        Collections.sort(list1, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+//
+//        System.out.println(list1);
+//        long stop1 = System.currentTimeMillis();
+//        System.out.println(stop1 - start1);
+//
+//        File newFile = new File("/home/leva/Public/new.txt");
+//        if (newFile.createNewFile()) {
+//            println("file create");
+//        } else {
+//            println("not create");
+//        }
+//        FileWriter write = new FileWriter("/home/leva/Public/new.txt", false);
+//        //write.write(String.valueOf(list1));
+//
+//        println("\n");
+//        for (int i = 1; i < Math.min(list1.size(), 11); i++) {
+//            println("key: " + list1.get(i).getKey() + ", value: " + list1.get(i).getValue());
+//        }
+//
+//        println("\n");
+//        println("Create DB");
+//
+//
+//        final String JDBC_DRIVER = "com.postgresql.Driver";
+//        final String DB_URL = "jdbc:postgresql://localhost:5432/words";
+//
+//        final String USER = "postgres";
+//        final String PASS = "123qwe";
+//
+//        Connection conn = null;
+//        Statement stmt = null;
+//
+//        try {
+//            //Class.forName("com.postgresql.Driver");
+//            println("Connection database...");
+//            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+//            //println("Creating database...");
+//            stmt = conn.createStatement();
+//            String sql = "CREATE DATABASE WORDS";
+////
+//            stmt.executeUpdate(sql);
+//
+//            String sql1 = "CREATE TABLE WORDS " +
+//                    "(ID int PRIMARY KEY  NOT NULL, " +
+//                    " WORD           CHARACTER VARYING(30) NOT NULL,  " +
+//                    " VALUE          INT  NOT NULL)";
+//            stmt.executeUpdate(sql1);
+//
+//            for (int i = 1; i < Math.min(list1.size(), 11); i++) {
+//                //println("key: " + list1.get(i).getKey() + ", value: " + list1.get(i).getValue());
+//                sql1 = "INSERT INTO WORDS (ID, WORD, VALUE) " +
+//                        "VALUES ("+ i +", '" + list1.get(i).getKey() + "', " + list1.get(i).getValue() + ")";
+//                stmt.executeUpdate(sql1);
+//            }
+//
+//            ResultSet rs = stmt.executeQuery("SELECT * FROM WORDS");
+//            println("Table: ");
+//            while (rs.next()) {
+//                int id = rs.getInt("id");
+//                String word = rs.getString("word");
+//                int value = rs.getInt("value");
+//                println("№ " + id + " word is " + '"' + word + '"' + " count " + value + ";");
+//            }
+//
+//            //println("DB created successfully...");
+//        } catch (SQLException se) {
+//            se.printStackTrace();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (stmt != null)
+//                    stmt.close();
+//            } catch (SQLException se2) {
+//            }
+//            try {
+//                if (conn !=null)
+//                    conn.close();
+//            } catch (SQLException se) {
+//                se.printStackTrace();
+//            }
+//        }
+//    }
+//}
