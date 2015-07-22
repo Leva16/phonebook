@@ -9,6 +9,8 @@ public class ReadFile {
     public static void main(String[] args) throws IOException, SQLException, InterruptedException {
 
         DBManager dbManager = new DBManager();
+        InputAndCheck inputAndCheck = new InputAndCheck();
+
         dbManager.initDataBase();
 
         Scanner text = new Scanner(System.in);
@@ -25,109 +27,69 @@ public class ReadFile {
             System.out.println("Press [6] to update contact.");
             System.out.println("Press [7] to show all contacts.");
             System.out.println("Press 'q' for quit.");
-            System.out.print("Take your choice: ");
 
-            char chr = text.next(".").charAt(0);
+            String str1 = "";
+
+            while (str1.length() == 0) {
+                System.out.print("Take your choice: ");
+                str1 = text.nextLine();
+            }
+
+            char chr = str1.charAt(0);
 
             switch (chr) {
                 case '1':
                 {
-                    text.nextLine();
-                    System.out.println();
-                    System.out.print("Enter a name: ");
-                    String name = text.nextLine();
-                    name = name.substring(0, 1).toUpperCase() + name.substring(1);
-                    System.out.print("Enter a surname: ");
-                    String surname = text.nextLine();
-                    surname = surname.substring(0, 1).toUpperCase() + surname.substring(1);
-                    System.out.print("Enter a phone: ");
-                    String phone = text.nextLine();
+                    String name = inputAndCheck.checkInputName();
+                    String surname = inputAndCheck.checkInputSurname();
+                    String phone = inputAndCheck.checkInputPhone();
                     dbManager.addContact(name, surname, phone);
-                    System.out.println();
                     break;
                 }
                 case '2':
                 {
-                    text.nextLine();
-                    System.out.println();
-                    System.out.print("Enter ID: ");
-                    String str = text.nextLine();
-                    int id = Integer.parseInt(str);
-                    dbManager.deleteRowByID(id);
+                    dbManager.deleteRowByID(inputAndCheck.checkInputID());
                     System.out.println();
                     break;
                 }
                 case '3':
                 {
-                    text.nextLine();
-                    System.out.println();
-                    System.out.print("Enter a name: ");
-                    String name = text.nextLine();
-                    name = name.substring(0, 1).toUpperCase() + name.substring(1);
-                    dbManager.findByName(name);
-                    System.out.println();
+                    dbManager.findByName(inputAndCheck.checkInputName());
                     break;
                 }
                 case '4':
                 {
-                    text.nextLine();
-                    System.out.println();
-                    System.out.print("Enter a surname: ");
-                    String surname = text.nextLine();
-                    surname = surname.substring(0, 1).toUpperCase() + surname.substring(1);
-                    dbManager.findBySurname(surname);
-                    System.out.println();
-
+                    dbManager.findBySurname(inputAndCheck.checkInputSurname());
                     break;
                 }
                 case '5':
                 {
-                    text.nextLine();
-                    System.out.println();
-                    System.out.print("Enter a phone number: ");
-                    String phone = text.nextLine();
-                    dbManager.findByPhone(phone);
-                    System.out.println();
+                    dbManager.findByPhone(inputAndCheck.checkInputPhone());
                     break;
                 }
                 case '6':
                 {
-                    text.nextLine();
-                    System.out.println();
-                    System.out.print("Enter ID number: ");
-                    String idString = text.nextLine();
-                    int id = Integer.parseInt(idString);
-                    System.out.print("Enter a name: ");
-                    String name = text.nextLine();
-                    name = name.substring(0, 1).toUpperCase() + name.substring(1);
-                    System.out.print("Enter a surname: ");
-                    String surname = text.nextLine();
-                    surname = surname.substring(0, 1).toUpperCase() + surname.substring(1);
-                    System.out.print("Enter a phone: ");
-                    String phone = text.nextLine();
+                    int id = inputAndCheck.checkInputID();
+                    String name = inputAndCheck.checkInputName();
+                    String surname = inputAndCheck.checkInputSurname();
+                    String phone = inputAndCheck.checkInputPhone();
                     dbManager.updateDB(id, name, surname, phone);
-                    System.out.println();
                     break;
                 }
                 case '7':
                 {
-                    text.nextLine();
-                    System.out.println();
                     dbManager.tableContent();
-                    System.out.println();
                     break;
                 }
                 case 'q':
                 {
-                    System.out.println();
-                    System.out.println("Excellent choice.");
+                    System.out.println("\nExcellent choice.");
                     exit = true;
                     break;
                 }
                 default:
                 {
-                    System.out.println();
-                    System.out.println("Choose wisely.");
+                    System.out.println("\nChoose wisely.");
                     System.out.println();
                     break;
                 }

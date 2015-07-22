@@ -91,10 +91,10 @@ public class DBManager {
     }
 
         private void createDB() {
+            String sql = "CREATE DATABASE PHONEBOOK";
             try {
                 con = DriverManager.getConnection(URL, USER, PASS);
                 stmt = con.createStatement();
-                String sql = "CREATE DATABASE PHONEBOOK";
                 stmt.executeUpdate(sql);
                 System.out.println("DB create.");
             } catch (SQLException e) {
@@ -102,13 +102,13 @@ public class DBManager {
             }
         }
         private void createTBL() {
+            String sql = "CREATE TABLE CONTACTS " +
+                    "(ID serial PRIMARY KEY  NOT NULL, " + "NAME CHARACTER VARYING(30) NOT NULL, " +
+                    "SURNAME CHARACTER VARYING(30) NOT NULL, " +
+                    "PHONENUMBER CHARACTER VARYING(30) NOT NULL)";
             try {
                 con = DriverManager.getConnection(URL + DBNAME, USER, PASS);
                 stmt = con.createStatement();
-                String sql = "CREATE TABLE CONTACTS " +
-                        "(ID serial PRIMARY KEY  NOT NULL, " + "NAME CHARACTER VARYING(30) NOT NULL, " +
-                        "SURNAME CHARACTER VARYING(30) NOT NULL, " +
-                        "PHONENUMBER CHARACTER VARYING(30) NOT NULL)";
                 stmt.executeUpdate(sql);
                 System.out.println("Table created.");
             } catch (SQLException e) {
@@ -127,8 +127,8 @@ public class DBManager {
 
     public boolean checkRecordExist(String phone) {
         boolean res = false;
+        String sql = "SELECT PHONENUMBER FROM CONTACTS WHERE PHONENUMBER = ?";
         try {
-            String sql = "SELECT PHONENUMBER FROM CONTACTS WHERE PHONENUMBER = ?";
             con = DriverManager.getConnection(URL + DBNAME, USER, PASS);
             ps = con.prepareStatement(sql);
             ps.setString(1, phone);
@@ -143,9 +143,9 @@ public class DBManager {
     }
 
     public void updateDB(int id, String name, String surname, String phone) {
+        String sql = "UPDATE CONTACTS SET NAME = ?, SURNAME = ?, PHONENUMBER = ? WHERE ID = ?";
         try {
             con = DriverManager.getConnection(URL + DBNAME, USER, PASS);
-            String sql = "UPDATE CONTACTS SET NAME = ?, SURNAME = ?, PHONENUMBER = ? WHERE ID = ?";
             ps = con.prepareStatement(sql);
             ps.setString(1, name);
             ps.setString(2, surname);
@@ -162,7 +162,6 @@ public class DBManager {
 
     public void addContact(String name, String surname, String phone) throws SQLException {
         try {
-
             if (checkRecordExist(phone)) {
                 System.out.println("Contact whit this phone number already exist.");
                 System.out.println("Choose 'update' menu to change contact.");
@@ -174,7 +173,7 @@ public class DBManager {
                 ps.setString(2, surname);
                 ps.setString(3, phone);
                 ps.executeUpdate();
-                System.out.println("Contact added.");
+                System.out.println("Contact added.\n");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -185,12 +184,12 @@ public class DBManager {
     }
 
     public void tableContent() {
+        String sql = "SELECT * FROM CONTACTS ORDER BY ID";
         try {
             con = DriverManager.getConnection(URL + DBNAME, USER, PASS);
             stmt = con.createStatement();
-            String sql = "SELECT * FROM CONTACTS ORDER BY ID";
             rs = stmt.executeQuery(sql);
-            System.out.println("Id  Name       Surname       Phone number");
+            System.out.println("\nId  Name       Surname       Phone number");
             System.out.println("--  ----       -------       ------------");
             while (rs.next()) {
                 int id = rs.getInt("id");
@@ -199,6 +198,7 @@ public class DBManager {
                 String phone = rs.getString("phonenumber");
                 System.out.format("%-4d%-11s%-14s%-7s%n", id, name, surname, phone);
             }
+            System.out.println();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -207,12 +207,10 @@ public class DBManager {
     }
 
     public void findByName(String name) {
+        String sql = "SELECT ID, NAME, SURNAME, PHONENUMBER FROM CONTACTS WHERE NAME = ?";
         try {
-            con = DriverManager.getConnection(URL + DBNAME, USER, PASS);
-            String sql = "SELECT ID, NAME, SURNAME, PHONENUMBER FROM CONTACTS WHERE NAME = ?";
-
             whileForFind(sql, name);
-
+            System.out.println();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -225,12 +223,10 @@ public class DBManager {
      * @param surname
      */
     public void findBySurname(String surname) {
+        String sql = "SELECT NAME, SURNAME, PHONENUMBER FROM CONTACTS WHERE SURNAME = ?";
         try {
-            con = DriverManager.getConnection(URL + DBNAME, USER, PASS);
-            String sql = "SELECT NAME, SURNAME, PHONENUMBER FROM CONTACTS WHERE SURNAME = ?";
-
             whileForFind(sql, surname);
-
+            System.out.println();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -238,13 +234,10 @@ public class DBManager {
         }
     }
 
-    public void findByPhone(String txt) {
+    public void findByPhone(String phone) {
+        String sql = "SELECT NAME, SURNAME, PHONENUMBER FROM CONTACTS WHERE PHONENUMBER = ?";
         try {
-            con = DriverManager.getConnection(URL + DBNAME, USER, PASS);
-            String sql = "SELECT NAME, SURNAME, PHONENUMBER FROM CONTACTS WHERE PHONENUMBER = ?";
-
-            whileForFind(sql, txt);
-
+            whileForFind(sql, phone);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -253,21 +246,22 @@ public class DBManager {
     }
 
     public void whileForFind(String sql, String txt) throws SQLException {
+        con = DriverManager.getConnection(URL + DBNAME, USER, PASS);
         ps = con.prepareStatement(sql);
         ps.setString(1, txt);
         rs = ps.executeQuery();
-        boolean chc = false;
-        int i = 0;
+        boolean check = false;
+        int count = 0;
         while (rs.next()) {
-            String nm = rs.getString("name");
-            String sn = rs.getString("surname");
-            String pn = rs.getString("phonenumber");
-            System.out.println("name: " + nm + ", surname: " + sn + ", phone: " + pn);
-            chc = true;
-            i++;
+            String name = rs.getString("name");
+            String surname = rs.getString("surname");
+            String phone = rs.getString("phonenumber");
+            System.out.println("name: " + name + ", surname: " + surname + ", phone: " + phone);
+            check = true;
+            count++;
         }
-        if (chc) {
-            System.out.println("Found " + i + " people.");
+        if (check) {
+            System.out.println("Found " + count + " people.");
         } else {
             System.out.println("Contact not found.");
         }
@@ -291,10 +285,11 @@ public class DBManager {
             finalExp();
         }
     }
+
     public boolean checkIDExist(int id) {
+        String sql = "SELECT ID FROM CONTACTS WHERE ID = ?";
         boolean res = false;
         try {
-            String sql = "SELECT ID FROM CONTACTS WHERE ID = ?";
             con = DriverManager.getConnection(URL + DBNAME, USER, PASS);
             ps = con.prepareStatement(sql);
             ps.setInt(1, id);
